@@ -9,13 +9,15 @@ plugins {
 }
 
 group = "de.eldoria"
-version = "2.6.4"
+version = "2.7.1"
 
-var publishModules = setOf("schematicbrushreborn-api",
-        "schematicbrushreborn-core",
-        "schematicbrushreborn-paper",
-        "schematicbrushreborn-paper-legacy",
-        "schematicbrushreborn-spigot")
+var publishModules = setOf(
+    "schematicbrushreborn-api",
+    "schematicbrushreborn-core",
+    "schematicbrushreborn-paper",
+    "schematicbrushreborn-paper-legacy",
+    "schematicbrushreborn-spigot"
+)
 
 allprojects {
     repositories {
@@ -41,7 +43,9 @@ allprojects {
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_17
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
         withSourcesJar()
         withJavadocJar()
     }
@@ -62,7 +66,7 @@ allprojects {
         }
         compileOnly(libs.fawe.bukkit)
 
-        testImplementation(platform("org.junit:junit-bom:5.10.2"))
+        testImplementation(platform("org.junit:junit-bom:5.10.3"))
         testImplementation("org.junit.jupiter", "junit-jupiter")
         testImplementation(testlibs.mockbukkit)
         testImplementation(libs.worldedit) {
@@ -75,7 +79,11 @@ allprojects {
     }
 
     publishData {
-        useInternalEldoNexusRepos()
+        if (project.name.contains("api")) {
+            useEldoNexusRepos()
+        } else {
+            useInternalEldoNexusRepos()
+        }
     }
 
     tasks {
